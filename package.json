@@ -28,5 +28,8 @@
     "gulp-webp-html": "^1.0.2",
     "gulp-webpcss": "^1.1.1"
   },
-  "dependencies": {}
+  "dependencies": {
+    "gulp-iconfont": "^10.0.3",
+    "gulp-iconfont-css": "^3.0.0"
+  }
 }

@@ -11,6 +11,8 @@ let path = {
         js: project_folder + "/js/",
         img: project_folder + "/img/",
         fonts: project_folder + "/fonts/",
+
+
     },
     src: { //source folder
         html: [source_folder + "/*.html", "!" + source_folder + "/_*.html"],
@@ -18,6 +20,7 @@ let path = {
         js: source_folder + "/js/script.js",
         img: source_folder + "/img/**/*.{png,PNG,gif,GIF,JPG,jpg,svg,SVG,ico,ICO,webp,WEBP,jpeg,JPEG}",
         fonts: source_folder + "/fonts/*.ttf",
+        icons: source_folder + "/fonts/icons/*.svg",
     },
     watch: { //watch folder
         html: source_folder + "/**/*.html",
@@ -48,7 +51,9 @@ const { series, parallel, src, dest } = require("gulp"), //binding gulp module
     svgsprite = require("gulp-svg-sprite"), //adding svg sprites
     ttf2woff = require("gulp-ttf2woff"),
     ttf2woff2 = require("gulp-ttf2woff2"),
-    fonter = require("gulp-fonter");
+    fonter = require("gulp-fonter"),
+    iconfont = require('gulp-iconfont'),
+    iconfontCss = require('gulp-iconfont-css');
 
 
 
@@ -117,7 +122,8 @@ function sassConverter() {
         .pipe(autoPrefixer({
             overrideBrowserslist: ["last 15 versions"],
             cascade: true
-        })).pipe(webpCss())
+        }))
+        .pipe(webpCss())
         .pipe(gulp.dest(path.build.css))
         .pipe(clean_css())
         .pipe(rename({
@@ -136,6 +142,8 @@ function fonts() {
     src(path.src.fonts)
         .pipe(ttf2woff())
         .pipe(dest(path.build.fonts));
+    src(source_folder + "/fonts/icons.* ")
+        .pipe(dest(path.build.fonts))
     return src(path.src.fonts)
         .pipe(ttf2woff2())
         .pipe(dest(path.build.fonts))
@@ -174,6 +182,33 @@ function fontsStyle() {
 function cb() {
 }
 
+
+/////////////////////////////////////////
+
+var fontName = 'icons';
+//add svg icons to the folder "icons" and use 'iconfont' task for generating icon font
+gulp.task('iconfont', async () => {
+    gulp.src(path.src.icons)
+        .pipe(iconfontCss({
+            // где будет наш scss файл
+            targetPath: './../scss/icons.scss',
+            // пути подлючения шрифтов в icons.scss
+            fontPath: "./../fonts/",
+            fontName: fontName
+        }))
+        .pipe(iconfont({
+            fontName: fontName,
+            formats: ['svg', 'ttf', 'eot', 'woff', 'woff2'],
+            normalize: true,
+            fontHeight: 1001
+        }))
+        .pipe(gulp.dest(source_folder + '/fonts'))
+});
+
+
+
+
+//////////////////////////////////////////
 
 //-- chenges wathing--//
 function watchFiles() {
