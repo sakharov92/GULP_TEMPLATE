@@ -142,8 +142,6 @@ function fonts() {
     src(path.src.fonts)
         .pipe(ttf2woff())
         .pipe(dest(path.build.fonts));
-    src(source_folder + "/fonts/icons.* ")
-        .pipe(dest(path.build.fonts))
     return src(path.src.fonts)
         .pipe(ttf2woff2())
         .pipe(dest(path.build.fonts))
@@ -175,6 +173,8 @@ function fontsStyle() {
                     c_fontname = fontname;
                 }
             }
+            src(source_folder + "/fonts/iconfonts/icons.* ")
+                .pipe(dest(path.build.fonts))
         })
     }
 
@@ -191,7 +191,7 @@ gulp.task('iconfont', async () => {
     gulp.src(path.src.icons)
         .pipe(iconfontCss({
             // где будет наш scss файл
-            targetPath: './../scss/icons.scss',
+            targetPath: './../../scss/icons.scss',
             // пути подлючения шрифтов в icons.scss
             fontPath: "./../fonts/",
             fontName: fontName
@@ -202,7 +202,7 @@ gulp.task('iconfont', async () => {
             normalize: true,
             fontHeight: 1001
         }))
-        .pipe(gulp.dest(source_folder + '/fonts'))
+        .pipe(gulp.dest(source_folder + '/fonts/iconfonts'))
 });
 
 
